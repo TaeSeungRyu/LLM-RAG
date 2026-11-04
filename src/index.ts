@@ -1,5 +1,9 @@
 import readline from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
+import {
+  saveMessage,
+  getMessages,
+} from './database.ts';
 
 type Message = {
   role: 'system' | 'user' | 'assistant';
@@ -15,7 +19,9 @@ const messages: Message[] = [
     role: 'system',
     content: '당신은 친절한 개발 강사입니다.',
   },
+  ...getMessages(20),
 ];
+console.log('DB에서 불러온 대화:', messages);
 
 // 터미널 입력
 const rl = readline.createInterface({
@@ -51,10 +57,8 @@ async function askLLM(question: string) {
   const answer: string = data.message.content;
 
   // 요청 성공 후 대화 저장
-  messages.push(
-    { role: 'user', content: question },
-    { role: 'assistant', content: answer }
-  );
+  saveMessage('user', question);
+  saveMessage('assistant', answer);
 
   // 이전 답변을 기억하는지 체크 해 보기 --*-*-*-*--*-*-*-*--*-*-*-*
   /***
