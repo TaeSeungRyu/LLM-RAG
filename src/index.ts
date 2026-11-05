@@ -14,14 +14,6 @@ const MODEL = 'qwen3:1.7b';
 const URL = 'http://localhost:11434/api/chat';
 
 // 대화 기록
-const messages: Message[] = [
-  {
-    role: 'system',
-    content: '당신은 친절한 개발 강사입니다.',
-  },
-  ...getMessages(20),
-];
-console.log('DB에서 불러온 대화:', messages);
 
 // 터미널 입력
 const rl = readline.createInterface({
@@ -31,10 +23,24 @@ const rl = readline.createInterface({
 
 // LLM 호출
 async function askLLM(question: string) {
+  const MAX_HISTORY = 10;
+
   const nextMessages: Message[] = [
-    ...messages,
-    { role: 'user', content: question },
+    {
+      role: 'system',
+      content: '당신은 친절한 개발 강사입니다.',
+    },
+    ...getMessages(MAX_HISTORY * 2),
+    {
+      role: 'user',
+      content: question,
+    },
   ];
+
+  console.log(
+    'LLM에 전달한 메시지 수:',
+    nextMessages.length
+  );  
 
   const response = await fetch(URL, {
     method: 'POST',
@@ -60,27 +66,7 @@ async function askLLM(question: string) {
   saveMessage('user', question);
   saveMessage('assistant', answer);
 
-  // 이전 답변을 기억하는지 체크 해 보기 --*-*-*-*--*-*-*-*--*-*-*-*
-  /***
-   * 
-    나: 내 이름은 철수야.
-    나: 나는 인천에 살아.
-    나: 나는 개발자야.
-    나: 오늘은 LLM을 공부하고 있어.
-    나: 내 이름이 뭐였지?
-   */
-  const MAX_HISTORY = 3;
 
-  // system 메시지 제외
-  const history = messages.slice(1);
-
-  // 질문 + 답변 = 1쌍
-  if (history.length > MAX_HISTORY * 2) {
-    messages.splice(
-      1,
-      history.length - MAX_HISTORY * 2
-    );
-  }  
 
   console.log('\nAI:', answer);
 
