@@ -72,3 +72,14 @@ function cosineSimilarity(a: number[], b: number[]): number {
 
 
 main().catch(console.error);
+
+
+//같은 모델이 같은 질문을 받으면 벡터값은 동일하다.
+const a = await getEmbedding('너 밥 먹었어?');
+const b = await getEmbedding('너 밥 먹었어?');
+
+console.log('완전히 동일한가?',
+    a.every((value, index) => value === b[index])
+);
+
+console.log('코사인 유사도:', cosineSimilarity(a, b));
