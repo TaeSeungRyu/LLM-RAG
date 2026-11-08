@@ -6,6 +6,10 @@ const EMBEDDING_URL = 'http://localhost:11434/api/embed';
 const LLM_MODEL = 'qwen3:1.7b';
 const LLM_URL = 'http://localhost:11434/api/chat';
 
+///// A-1 : 임계값 설정을 위한 상수(임계값은 기준 수치를 활용하여 불필요한 답변을 하지 않도록 하는 것!)
+const SIMILARITY_THRESHOLD = 0.6;
+const TOP_K = 3;
+
 
 //////2. 질문을 Embedding으로 변환 //////
 async function getEmbedding(text: string): Promise<number[]> {
@@ -50,6 +54,7 @@ function    cosineSimilarity(a: number[], b: number[]): number {
 }
 
 //////4. 검색 함수//////
+
 async function searchDocuments(question: string) {
   const queryVector = await getEmbedding(question);
   const documents = getDocuments();
@@ -59,10 +64,15 @@ async function searchDocuments(question: string) {
     score: cosineSimilarity(queryVector, doc.embedding),
   }));
 
+  // 유사도가 높은 순서로 정렬
   results.sort((a, b) => b.score - a.score);
 
-  return results.slice(0, 3);
+  // 기준 이상의 문서만 반환
+  return results
+    .filter(doc => doc.score >= SIMILARITY_THRESHOLD)   //임계값을 적용, 벡터값 일정 수치 이하를 모델에게 전달을 하지 않도록 함.
+    .slice(0, TOP_K);
 }
+
 
 
 //////5. 검색 결과를 LLM에 전달//////
@@ -70,6 +80,13 @@ async function searchDocuments(question: string) {
 async function askRAG(question: string) {
   // 1. 관련 문서 검색
   const documents = await searchDocuments(question);
+
+  // 검색 결과가 없는 경우
+  if (documents.length === 0) {
+    console.log('\n[AI 답변]');
+    console.log('관련 자료가 없어 답변할 수 없습니다.');
+    return;
+  }
 
   // 2. 검색된 문서를 하나의 문자열로 구성
   const context = documents
@@ -118,7 +135,8 @@ async function askRAG(question: string) {
 }
 
 async function main() {
-  await askRAG('나는 어떤 언어로 서버를 개발하지?');
+  //await askRAG('나는 어떤 언어로 서버를 개발하지?');
+  await askRAG('나는 배가 너무 고파!');  //임계값 적용 테스트
 }
 
 main().catch(console.error);
