@@ -4,7 +4,7 @@
 const URL = 'http://localhost:11434/api/embed';
 const MODEL = 'embeddinggemma';
 
-async function getEmbedding(text: string): Promise<number[]> {
+export async function getEmbedding(text: string): Promise<number[]> {
     const response = await fetch(URL, {
         method: 'POST',
         headers: {
@@ -52,7 +52,7 @@ async function main() {
 
 
 //유사도 체크용
-function cosineSimilarity(a: number[], b: number[]): number {
+export function cosineSimilarity(a: number[], b: number[]): number {
     if (a.length !== b.length || a.length === 0) {
         throw new Error('벡터 차원이 올바르지 않습니다.');
     }
