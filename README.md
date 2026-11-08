@@ -59,11 +59,11 @@ node src/embedding.ts
 
 ## 6. 학습 진행 현황
 
-- [x] Ollama 설치 및 로컬 LLM 실행
-- [x] TypeScript에서 LLM API 호출
-- [x] 대화 기록 관리
-- [x] SQLite 대화 저장 및 복원
-- [x] Embedding 기초
-- [x] 코사인 유사도 계산
-- [ ] Semantic Search (의미 기반 검색)
-- [ ] RAG 구현
+1. [LLM](docs/01-llm.md)
+2. [Ollama](docs/02-ollama.md)
+3. [대화 메모리](docs/03-chat-memory.md)
+4. [Embedding](docs/04-embedding.md)
+5. [벡터 검색](docs/05-vector-search.md)
+6. [RAG](docs/06-rag.md)
+7. [Threshold와 Top-K](docs/07-threshold.md)
+8. [Chunking과 Overlap](docs/08-chunking.md)
