@@ -1,0 +1,36 @@
+[사전 데이터 준비]
+
+원본 문서
+   ↓
+Chunking + Overlap
+   ↓
+Embedding
+   ↓
+DB 저장 (원본 Chunk + 벡터)
+
+
+[사용자 질문 처리]
+
+사용자 질문
+   ↓
+Embedding
+   ↓
+질문 벡터 생성
+   ↓
+DB에 저장된 문서 벡터와 유사도 비교
+   ↓
+Threshold 필터링 + Top-K 선택
+   ↓
+관련 문서가 있는가?
+   │
+   ├── NO → LLM 호출 없이 종료
+   │
+   └── YES
+        ↓
+     선택된 Chunk 원문 추출
+        ↓
+     사용자 질문 + Chunk 원문
+        ↓
+     LLM (qwen3:1.7b)
+        ↓
+     최종 답변 반환
