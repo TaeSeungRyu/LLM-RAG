@@ -2,7 +2,7 @@
 import { getEmbedding, cosineSimilarity } from './embedding.ts';
 import { getDocuments } from './vector-db.ts';
 
-async function searchChunks(question: string) {
+export async function searchChunks(question: string) {
     // 1. 사용자 질문을 벡터로 변환
     const questionVector = await getEmbedding(question);
 
@@ -22,14 +22,15 @@ async function searchChunks(question: string) {
     return results.slice(0, 3);
 }
 
-const results = await searchChunks(
-    'ABC 회사는 어떤 데이터베이스를 사용하나요?'
-);
 
-console.log('\n[검색 결과]');
+// const results = await searchChunks(
+//     'ABC 회사는 어떤 데이터베이스를 사용하나요?'
+// );
 
-results.forEach((result, index) => {
-    console.log(`\n${index + 1}위`);
-    console.log('유사도:', result.score.toFixed(4));
-    console.log('내용:', result.content);
-});
+// console.log('\n[검색 결과]');
+
+// results.forEach((result, index) => {
+//     console.log(`\n${index + 1}위`);
+//     console.log('유사도:', result.score.toFixed(4));
+//     console.log('내용:', result.content);
+// });
