@@ -83,6 +83,24 @@ async function main(): Promise<void> {
         console.log(
             `Precision@${K}: ${precision.toFixed(4)}`
         );
+
+        // 전체 DB에서 관련 Chunk 수
+        const totalRelevant = documents.filter((doc) =>
+        doc.content.includes(test.expected)
+        ).length;
+
+        // 검색된 상위 K개에서 관련 Chunk 수
+        const retrievedRelevant = results.filter((doc) =>
+        doc.content.includes(test.expected)
+        ).length;
+
+        // Recall@K
+        const recall =
+        totalRelevant === 0
+            ? 0
+            : retrievedRelevant / totalRelevant;
+
+        console.log(`Recall@${K}: ${recall.toFixed(4)}`);        
     }
 
     // 6. 전체 질문 평균
